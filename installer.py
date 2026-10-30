@@ -27,7 +27,7 @@ from ctypes import WINFUNCTYPE, c_wchar_p
 
 APP_NAME = "假休眠"
 APP_ID = "FakeSleep"
-APP_VER = "1.3.3"
+APP_VER = "1.3.4"
 APP_FULL = "假休眠 FakeSleep"
 PUBLISHER = "LCJ"
 HOMEPAGE = "https://github.com/longchangjin2-arch/FakeSleep"
