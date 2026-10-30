@@ -6,7 +6,7 @@
 
 > **开源仓库（主）**：<https://gitee.com/i-dont-want-to-pick-a-name/FakeSleep>
 > **下载**：到 [Gitee Releases](https://gitee.com/i-dont-want-to-pick-a-name/FakeSleep/releases) 拿成品——
-> `FakeSleep-Setup-v1.3.3.exe`（安装包，推荐）或 `FakeSleep.exe`（免安装单文件）。
+> `FakeSleep-Setup-v1.3.4.exe`（安装包，推荐）或 `FakeSleep.exe`（免安装单文件）。
 > **网页下载页**：<https://fakesleep.pages.dev>（Cloudflare Pages）
 >
 > GitHub 旧仓库（`longchangjin2-arch/FakeSleep`）因账号被暂停已不可访问，主仓库已迁到 Gitee。
@@ -142,11 +142,11 @@ FakeSleep.exe --brightness=100   直接把亮度拉到 100 后退出（摸黑救
 
 ## 两种安装方式
 
-**A. 安装包（推荐）** — 双击 `FakeSleep-Setup-v1.3.3.exe`：
+**A. 安装包（推荐）** — 双击 `FakeSleep-Setup-v1.3.4.exe`：
 
 - 图形向导，可自选安装目录、是否建桌面快捷方式、是否开机自启
 - 装完在「设置 → 应用 → 已安装的应用」里能正常卸载（写 HKCU 卸载项，不需要管理员权限）
-- 静默安装：`FakeSleep-Setup-v1.3.3.exe /S /DIR="D:\Apps\FakeSleep" [/NOICONS]`
+- 静默安装：`FakeSleep-Setup-v1.3.4.exe /S /DIR="D:\Apps\FakeSleep" [/NOICONS]`
 - 静默卸载：`"<安装目录>\uninstall.exe" /S`
 
 **B. 免安装** — 直接双击 `FakeSleep.exe`，绿色单文件。
@@ -154,13 +154,14 @@ FakeSleep.exe --brightness=100   直接把亮度拉到 100 后退出（摸黑救
 ## 文件
 
 - `FakeSleep.exe` — 主程序（也可从 [Gitee Releases](https://gitee.com/i-dont-want-to-pick-a-name/FakeSleep/releases) 下载）
-- `FakeSleep-Setup-v1.3.3.exe` — 安装包
+- `FakeSleep-Setup-v1.3.4.exe` — 安装包
 - `fakesleep.py` — 源码（纯标准库，仅 tkinter + ctypes）
 - `installer.py` — 安装器源码（tkinter 向导 + 注册表 + 快捷方式）
 - `make_icon.py` — 图标生成器（纯标准库）
 - `make_shortcut.py` — 桌面快捷方式生成器（ctypes 调 Shell COM）
 - `config.ini` — 配置（首次运行生成）
 - `fakesleep.log` — 运行日志
+- `site/` — Cloudflare Pages 下载页源文件（`index.html`、`version.json`、`_headers`）
 
 ## 自己动手
 
@@ -170,7 +171,7 @@ pip install pyinstaller
 pyinstaller --onefile --noconsole --icon icon.ico --name FakeSleep fakesleep.py
 
 # 打包安装器（把主程序打进去）
-pyinstaller --onefile --noconsole --icon icon.ico --name FakeSleep-Setup-v1.3.3 ^
+pyinstaller --onefile --noconsole --icon icon.ico --name FakeSleep-Setup-v1.3.4 ^
     --add-data "FakeSleep.exe;." --add-data "config.ini;." --add-data "icon.ico;." ^
     --add-data "README.md;." --add-data "LICENSE;." installer.py
 
@@ -184,6 +185,13 @@ python make_shortcut.py
 [MIT](LICENSE) © 2026 LCJ (longchangjin2-arch)
 
 ## 更新日志
+
+### 2026-10-30 v1.3.4
+- **更新检查改走自家下载页**：优先读 <https://fakesleep.pages.dev/version.json>，
+  失败再退到 Gitee API（匿名有时 403），再退 GitHub。三种都失败就静默，不打扰。
+- **Cloudflare Pages 下载页正式上线**：<https://fakesleep.pages.dev>
+  （页面源文件放在仓库 `site/` 目录，`_headers` 指定 MIME 与安全头）
+- 安装包 / 绿色版文件名同步升到 v1.3.4
 
 ### 2026-10-30 v1.3.3
 - **仓库迁到 Gitee**：GitHub 账号被暂停（403 suspended），主仓库改为 <https://gitee.com/i-dont-want-to-pick-a-name/FakeSleep>
