@@ -33,7 +33,7 @@ from ctypes import byref, c_uint32, c_void_p, c_wchar, WINFUNCTYPE
 from ctypes import wintypes
 
 APP_TITLE = "假休眠"
-APP_VER = "1.3.3"
+APP_VER = "1.3.4"
 
 # ---------------------------------------------------------------- 基础工具
 
@@ -466,8 +466,14 @@ class Hotkey(threading.Thread):
 
 GITEE_REPO = "i-dont-want-to-pick-a-name/FakeSleep"
 GH_REPO = "longchangjin2-arch/FakeSleep"
-# 依次尝试：Gitee 是主仓库，GitHub 留作备用（万一哪天 GitHub 恢复了）
+SITE_HOME = "https://fakesleep.pages.dev"
+VERSION_JSON = SITE_HOME + "/version.json"
+# 依次尝试：
+#   1) 自家下载页的 version.json —— 最稳，Cloudflare 上就是一份静态 JSON
+#   2) Gitee API —— 匿名请求现在会被 403/404，留着当兜底
+#   3) GitHub API —— 账号恢复后才用得上
 UPDATE_SOURCES = [
+    ("下载页", VERSION_JSON, SITE_HOME),
     ("Gitee", "https://gitee.com/api/v5/repos/%s/releases/latest" % GITEE_REPO,
      "https://gitee.com/%s/releases" % GITEE_REPO),
     ("GitHub", "https://api.github.com/repos/%s/releases/latest" % GH_REPO,
@@ -488,7 +494,8 @@ def _vtuple(s):
 
 
 def fetch_latest(timeout=6):
-    """依次问 Gitee / GitHub 要最新 release，返回 (tag, url, 来源)。全失败抛最后一个异常。"""
+    """依次问 下载页 / Gitee / GitHub 要最新版本，返回 (tag, url, 来源)。
+    全失败抛最后一个异常。"""
     import json
     import urllib.request
 
@@ -498,12 +505,19 @@ def fetch_latest(timeout=6):
             req = urllib.request.Request(api, headers={
                 "User-Agent": "FakeSleep/%s" % APP_VER,
                 "Accept": "application/json",
+                "Cache-Control": "no-cache",
             })
             with urllib.request.urlopen(req, timeout=timeout) as resp:
                 data = json.loads(resp.read().decode("utf-8", "replace"))
+            if not isinstance(data, dict):
+                raise ValueError("返回不是 JSON 对象")
+            # version.json 是自家格式：{"version": "1.3.4", "url": "...", ...}
+            if not data.get("tag_name") and data.get("version"):
+                tag = "v" + str(data["version"]).strip().lstrip("vV")
+                return tag, str(data.get("url") or page), name
             tag = str(data.get("tag_name") or "")
             if not tag:
-                raise ValueError("返回里没有 tag_name")
+                raise ValueError("返回里没有 tag_name / version")
             return tag, str(data.get("html_url") or page), name
         except Exception as e:
             last = e
