@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.py[cod]
+*.spec
+
+# 运行产物
+fakesleep.log
+
+# 打包产物（exe 走 GitHub Release，不进仓库）
+build/
+dist/
+*.exe
