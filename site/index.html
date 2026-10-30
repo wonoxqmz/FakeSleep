@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<!-- FakeSleep download page · build 2026-10-30 -->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>假休眠 FakeSleep · 本机屏幕全黑，远程照常控制</title>
+<meta name="description" content="Windows 客厅值守小工具：一键把本机屏幕变纯黑，远程控制软件仍然看到完整桌面。期间阻止系统休眠、熄屏与屏保。">
+<style>
+  :root{
+    --bg:#0d0d11; --card:#16161d; --card2:#1c1c25; --line:#26262f;
+    --fg:#ececf2; --dim:#8b8b98; --green:#3ddc84; --amber:#f0b429; --red:#ff5f56;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:radial-gradient(900px 500px at 50% -10%,#1a2230 0%,var(--bg) 60%);
+    color:var(--fg);
+    font-family:"Microsoft YaHei UI","PingFang SC","Segoe UI",system-ui,sans-serif;
+    line-height:1.65; padding:0 20px 60px;
+  }
+  a{color:var(--green);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:860px;margin:0 auto}
+  header{padding:64px 0 8px;text-align:center}
+  .moon{width:72px;height:72px;border-radius:50%;background:#1b1b22;margin:0 auto 18px;
+    box-shadow:inset -14px 6px 0 0 #ececf2, 0 0 0 1px #2a2a34}
+  h1{font-size:34px;margin:0 0 6px;letter-spacing:.04em}
+  .sub{color:var(--dim);font-size:14px;margin:0}
+  .badge{display:inline-block;margin-top:14px;padding:3px 10px;border:1px solid var(--line);
+    border-radius:999px;font-size:12px;color:var(--dim)}
+  .badge b{color:var(--green);font-weight:600}
+  section{margin-top:40px}
+  h2{font-size:16px;color:var(--dim);font-weight:600;letter-spacing:.14em;margin:0 0 14px;
+     text-transform:uppercase}
+  .modes{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .mode{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+  .mode .k{font-family:ui-monospace,Consolas,monospace;background:#000;border:1px solid #333;
+    border-radius:6px;padding:1px 7px;font-size:12px;color:#ddd}
+  .mode h3{margin:10px 0 6px;font-size:17px}
+  .mode p{margin:0;color:var(--dim);font-size:13px}
+  .mode.privacy{border-color:#2e4a3a;background:linear-gradient(180deg,#16211b,var(--card))}
+  .mode.privacy h3{color:var(--green)}
+  .dl{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+  .btn{display:block;background:var(--card2);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;color:var(--fg);transition:.15s}
+  .btn:hover{border-color:#3a3a48;transform:translateY(-1px);text-decoration:none}
+  .btn.primary{background:var(--green);border-color:var(--green);color:#08130c}
+  .btn.primary .t{color:#08130c}
+  .btn.primary .d{color:#0b2418;opacity:.85}
+  .btn .t{display:block;font-weight:700;font-size:15px}
+  .btn .d{display:block;font-size:12px;color:var(--dim);margin-top:3px}
+  .note{margin-top:12px;font-size:12px;color:var(--dim)}
+  table{width:100%;border-collapse:collapse;font-size:13px;background:var(--card);
+    border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line)}
+  th{color:var(--dim);font-weight:600;font-size:12px;background:#14141a}
+  tr:last-child td{border-bottom:0}
+  code{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;background:#000;
+    border:1px solid #2a2a34;border-radius:5px;padding:1px 5px;color:#d7e7dd}
+  pre{background:#0a0a0e;border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+    overflow:auto;font-size:12.5px;line-height:1.6;color:#cfd6d2}
+  ol{padding-left:22px;color:var(--dim);font-size:14px}
+  ol li{margin:6px 0}
+  ol b{color:var(--fg)}
+  footer{margin-top:52px;padding-top:20px;border-top:1px solid var(--line);
+    color:var(--dim);font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  @media(max-width:640px){
+    .modes,.dl{grid-template-columns:1fr}
+    h1{font-size:26px}
+    header{padding-top:44px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="moon"></div>
+    <h1>假休眠 FakeSleep</h1>
+    <p class="sub">电脑在客厅跑着项目，屏幕看着像关机 —— 但远程控制软件仍然看得到完整画面。</p>
+    <div class="badge">当前版本 <b id="ver">v1.3.4</b> · Windows 10/11 · MIT</div>
+  </header>
+
+  <section>
+    <h2>两个模式</h2>
+    <div class="modes">
+      <div class="mode">
+        <span class="k">F2</span>
+        <h3>黑屏</h3>
+        <p>所有显示器纯黑，远程端也一起黑。适合「谁都别看见」。</p>
+      </div>
+      <div class="mode privacy">
+        <span class="k">F1</span>
+        <h3>隐私 · 真·纯黑</h3>
+        <p>本机像素级纯黑，远程照常看到桌面、键鼠还能操作。<br>原理：纯黑遮罩 + 从屏幕捕获里排除。</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>下载</h2>
+    <div class="dl">
+      <a class="btn primary" href="https://gitee.com/i-dont-want-to-pick-a-name/FakeSleep/releases/download/v1.3.4/FakeSleep-Setup-v1.3.4.exe">
+        <span class="t">安装包（推荐）</span>
+        <span class="d">图形向导 · 可选目录 / 快捷方式 / 开机自启 · 可正常卸载</span>
+      </a>
+      <a class="btn" href="https://gitee.com/i-dont-want-to-pick-a-name/FakeSleep/releases/download/v1.3.4/FakeSleep.exe">
+        <span class="t">绿色单文件</span>
+        <span class="d">双击即用，不写注册表 · 约 11 MB</span>
+      </a>
+    </div>
+    <p class="note">下载走 Gitee Releases（国内速度快）。旧 GitHub 仓库因账号问题已停用。</p>
+  </section>
+
+  <section>
+    <h2>怎么用</h2>
+    <ol>
+      <li>双击运行，出现小面板</li>
+      <li>按 <b>F1</b> 进隐私（本机黑、远程正常），按 <b>F2</b> 进黑屏</li>
+      <li>再按一次对应热键，或按 <b>Esc</b>，恢复</li>
+      <li>手机远控没有功能键？点面板按钮进入，隐私模式点右上角「恢复 ×」退出</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>它做了什么</h2>
+    <table>
+      <tr><th>行为</th><th>说明</th></tr>
+      <tr><td>阻止系统休眠</td><td><code>SetThreadExecutionState</code>，每 25 秒续一次</td></tr>
+      <tr><td>阻止熄屏 / 屏保</td><td>叠加 <code>ES_DISPLAY_REQUIRED</code>（可配置关掉更省电）</td></tr>
+      <tr><td>隐私模式纯黑</td><td><code>SetWindowDisplayAffinity(WDA_EXCLUDEFROMCAPTURE)</code>：遮罩只画在屏幕上，捕获里不存在</td></tr>
+      <tr><td>远程可操作</td><td>遮罩设 <code>WS_EX_TRANSPARENT</code>，点击穿透到下层窗口</td></tr>
+      <tr><td>退出即恢复</td><td>关程序会清除休眠限制，亮度也一定还原</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>配置 config.ini</h2>
+<pre>[hotkey]            ; 黑屏热键（默认 F2）
+key = F2
+
+[privacy]           ; 隐私热键（默认 F1）
+key = F1
+method = veil       ; veil = 遮罩排除捕获（推荐）/ ddc = 硬件调光 / both
+exit_button = corner; corner = 右上角迷你按钮 / bar = 底部大条 / off = 不显示
+
+[display]
+keep_display_on = yes</pre>
+  </section>
+
+  <footer>
+    <span>MIT License © 2026 LCJ</span>
+    <span><a href="https://gitee.com/i-dont-want-to-pick-a-name/FakeSleep">源码仓库</a> · <a href="https://gitee.com/i-dont-want-to-pick-a-name/FakeSleep/releases">全部版本</a></span>
+  </footer>
+</div>
+</body>
+</html>
