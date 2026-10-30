@@ -1,0 +1,10 @@
+{
+  "version": "1.3.4",
+  "name": "假休眠 FakeSleep",
+  "date": "2026-10-30",
+  "url": "https://gitee.com/i-dont-want-to-pick-a-name/FakeSleep/releases",
+  "setup": "https://gitee.com/i-dont-want-to-pick-a-name/FakeSleep/releases/download/v1.3.4/FakeSleep-Setup-v1.3.4.exe",
+  "portable": "https://gitee.com/i-dont-want-to-pick-a-name/FakeSleep/releases/download/v1.3.4/FakeSleep.exe",
+  "notes": "仓库迁到 Gitee；更新检查改走本页 version.json；隐私模式恢复按钮改为右上角迷你样式",
+  "site": "https://fakesleep.pages.dev"
+}
